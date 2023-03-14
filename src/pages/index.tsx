@@ -8,6 +8,8 @@ import 'keen-slider/keen-slider.min.css'
 import { stripe } from '@/lib/stripe'
 import { GetStaticProps } from 'next'
 import Stripe from 'stripe'
+import { CaretLeft, CaretRight } from 'phosphor-react'
+import { useState } from 'react'
 
 interface HomeProps {
   products: {
@@ -19,13 +21,24 @@ interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
-  const [sliderRef] = useKeenSlider({
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [loaded, setLoaded] = useState(false)
+  const [sliderRef, instanceRef] = useKeenSlider({
     slides: {
       perView: 3,
-      spacing: 48
-    }
+      spacing: 48,
+    },
+    slideChanged(slider) {
+      setCurrentSlide(slider.track.details.rel);
+  },
+    created() {
+      setLoaded(true)
+    },
   })
 
+  const slidesLength = (instanceRef.current?.track.details.slides.length! - 3)
+  const disabledArrowLeft = currentSlide === 0 ? " arrow--disabled" : ""
+  const disabledArrowRight = currentSlide === slidesLength ? " arrow--disabled" : ""
 
   return (
     <>
@@ -33,21 +46,35 @@ export default function Home({ products }: HomeProps) {
         <title>Home | Ignite shop</title>
       </Head>
       
-      <HomeContainer ref={sliderRef} className='keen-slider'>
-        {products.map(product => {
-          return (
-            <Link href={`/product/${product.id}`}  key={product.id} prefetch={false}>
-              <Product className='keen-slider__slide'>
-                <Image src={product.imageUrl} width={520} height={480} alt="" />
+      <HomeContainer>
+        <div ref={sliderRef} className='keen-slider'>
+          {products.map(product => {
+            return (
+              <Link href={`/product/${product.id}`}  key={product.id} prefetch={false}>
+                <Product className='keen-slider__slide' >
+                  <Image src={product.imageUrl} width={520} height={480} alt="" />
 
-                <footer>
-                  <strong>{product.name}</strong>
-                  <span>{product.price}</span>
-                </footer>
-              </Product>
-            </Link>
-          )
-        })}
+                  <footer>
+                    <strong>{product.name}</strong>
+                    <span>{product.price}</span>
+                  </footer>
+                </Product>
+              </Link>
+            )
+          })}
+        </div>
+        {loaded && instanceRef.current && (
+          <>
+            <CaretLeft size={100} weight='thin'
+              onClick={() => instanceRef.current?.prev()}
+              className={`arrow arrow--left ${disabledArrowLeft}`}
+            />
+            <CaretRight size={100} weight='thin'
+              onClick={() => instanceRef.current?.next()}
+              className={`arrow arrow--right ${disabledArrowRight}`}
+            />
+          </>
+        )}
       </HomeContainer>
     </>
     
