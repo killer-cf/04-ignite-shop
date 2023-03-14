@@ -1,8 +1,10 @@
 import { stripe } from "@/lib/stripe"
 import { ImageContainer, ProductContainer, ProductDetails } from "@/styles/pages/product"
+import axios from "axios"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import { useRouter } from "next/router"
+import { useState } from "react"
 import Stripe from "stripe"
 
 interface ProductProps {
@@ -12,14 +14,35 @@ interface ProductProps {
     imageUrl: string
     price: string
     description: string
+    defaultPriceId: string
   }
 }
 
 export default function Product({ product }: ProductProps) {
+  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false)
   const { isFallback } = useRouter()
 
   if (isFallback) {
-    return <p>loading...</p>
+    return <div>loading...</div>
+  }
+
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckout(true)
+
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+
+    } catch (err) {
+      setIsCreatingCheckout(false)
+
+      alert('Falha ao redirecionar ao checkout!')
+    }
   }
 
   return (
@@ -33,7 +56,7 @@ export default function Product({ product }: ProductProps) {
 
         <p>{product.description}</p>
 
-        <button>
+        <button disabled={isCreatingCheckout} onClick={handleBuyProduct}>
           Comprar agora
         </button>
       </ProductDetails>
@@ -44,9 +67,7 @@ export default function Product({ product }: ProductProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: [
-      { params: { id: 'prod_NVCca60HNpQcIp' } }
-    ],
+    paths: [],
     fallback: true,
   }
 }
@@ -70,7 +91,8 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
           style: 'currency',
           currency: 'BRL'
         }).format(price.unit_amount! / 100),
-        description: product.description
+        description: product.description,
+        defaultPriceId: price.id
       }
     },
     revalidate: 60 * 60 * 1
