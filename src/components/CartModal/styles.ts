@@ -12,6 +12,57 @@ export const DialogContent = styled(Dialog.Content, {
   background: '$gray800',
   height: '100%',
   padding: '3rem',
+
+  ".ScrollAreaRoot": {
+    width: "100%",
+    overflow: "hidden",
+    "--scrollbar-size": "10px"
+  },
+  
+  ".ScrollAreaViewport": {
+    width: "100%",
+    height: "100%",
+    borderRadius: "inherit"
+  },
+  ".ScrollAreaScrollbar": {
+    display: "flex",
+    userSelect: "none",
+    touchAction: "none",
+    padding: "2px",
+    background: "$gray800",
+    transition: "background 2s ease-out",
+  },
+
+  ".ScrollAreaScrollbar:hover": { background: "$gray900" },
+
+  ".ScrollAreaScrollbar[data-orientation='vertical']": {
+    width: "var(--scrollbar-size)"
+  },
+
+  ".ScrollAreaThumb": {
+    flex: 1,
+    background: "$green500",
+    borderRadius: "var(--scrollbar-size)",
+    position: "relative",
+
+    '&:hover': {
+      background: "$green300",
+      transition: "background 0.2s ease-out",
+    }
+  },
+
+  ".ScrollAreaThumb::before": {
+    content: "''",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "100%",
+    height: "100%",
+    minWidth: "44px",
+    minHeight: "44px"
+  },
+  ".ScrollAreaCorner": { background: "$green500" }
 }) 
 
 export const DialogClose = styled(Dialog.Close, {
@@ -36,6 +87,8 @@ export const CartItems = styled('div', {
   flexDirection: 'column',
   gap: '1.5rem',
   flex: 1,
+
+  
 })
 
 export const ItemsInfo = styled('div', {
