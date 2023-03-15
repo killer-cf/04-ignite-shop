@@ -28,11 +28,12 @@ export const DialogTitle = styled(Dialog.Title, {
   fontSize: '$xl',
   color: '$gray100',
   lineHeight: 1.6,
-  margin: '1.5rem 0 0 2rem' 
+  margin: '1.5rem 0 2rem 0' 
 })
 
 export const CartItems = styled('div', {
   display: 'flex',
+  flexDirection: 'column',
   gap: '1.5rem',
   flex: 1,
 })
@@ -88,7 +89,7 @@ export const BuyButton = styled('button', {
 
   '&:disabled': {
     opacity: 0.6,
-    cursor: 'not-allowes',
+    cursor: 'not-allowed',
   },
 
   '&:not(:disabled):hover': {

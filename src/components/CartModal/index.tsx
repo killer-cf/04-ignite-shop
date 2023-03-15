@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'phosphor-react'
+import { CartItem } from '../CartItem'
 import { BuyButton, CartItems, DialogClose, DialogContent, DialogTitle, DivFlex, ItemsInfo } from './styles'
 
 export function CartModal() {
@@ -16,7 +17,9 @@ export function CartModal() {
         </DialogClose>
 
         <CartItems>
-
+          <CartItem />
+          <CartItem />
+          <CartItem />
         </CartItems>
 
         <ItemsInfo>
