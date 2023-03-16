@@ -1,10 +1,20 @@
+import { CartContext } from '@/contexts/CartContext';
 import * as Dialog from '@radix-ui/react-dialog'
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { X } from 'phosphor-react'
+import { useContext } from 'react';
 import { CartItem } from '../CartItem'
 import { BuyButton, CartItems, DialogClose, DialogContent, DialogTitle, DivFlex, ItemsInfo } from './styles'
 
 export function CartModal() {
+  const { items } = useContext(CartContext)
+
+  const totalValue = items.reduce((total, item) => total += parseInt(item.price.replace(/[^0-9]/g,'')), 0)
+  const total = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(totalValue / 100)
+
   return (
     <Dialog.Portal>
       <DialogContent>
@@ -20,13 +30,9 @@ export function CartModal() {
         <ScrollArea.Root className="ScrollAreaRoot">
           <ScrollArea.Viewport  className="ScrollAreaViewport">
             <CartItems>
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
+              {items.map(item => (
+                <CartItem key={item.id} itemData={item} />
+              ))}
             </CartItems>
           </ScrollArea.Viewport>
 
@@ -40,16 +46,16 @@ export function CartModal() {
         <ItemsInfo>
           <DivFlex>
             <p>Quantidade</p>
-            <span>3 itens</span>
+            <span>{items.length} itens</span>
           </DivFlex>
 
           <DivFlex>
             <h3>Valor Total</h3>
-            <h2>R$ 270,00</h2>
+            <h2>{total}</h2>
           </DivFlex>
         </ItemsInfo>
 
-        <BuyButton>
+        <BuyButton disabled={items.length < 1}>
           Finalizar compra
         </BuyButton>
       </DialogContent>

@@ -16,6 +16,7 @@ export const DialogContent = styled(Dialog.Content, {
   ".ScrollAreaRoot": {
     width: "100%",
     overflow: "hidden",
+    flex: 1,
     "--scrollbar-size": "10px"
   },
   
@@ -87,8 +88,6 @@ export const CartItems = styled('div', {
   flexDirection: 'column',
   gap: '1.5rem',
   flex: 1,
-
-  
 })
 
 export const ItemsInfo = styled('div', {
