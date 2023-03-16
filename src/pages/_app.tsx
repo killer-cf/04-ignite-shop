@@ -1,3 +1,4 @@
+import { CartContextProvider } from '@/contexts/CartContext'
 import { globalStyles } from '@/styles/global'
 import { Container, Header } from '@/styles/pages/app'
 import type { AppProps } from 'next/app'
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Header>
         <Image src={logo} alt="" />
       </Header>
-      <Component {...pageProps} />
+      <CartContextProvider>
+        <Component {...pageProps} />
+      </CartContextProvider>
     </Container>)
   
 }
