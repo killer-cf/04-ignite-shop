@@ -4,12 +4,13 @@ import Image from "next/image"
 import Stripe from "stripe"
 import * as Dialog from '@radix-ui/react-dialog'
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { stripe } from "@/lib/stripe"
 import { GetStaticPaths, GetStaticProps } from "next"
 
 import { ImageContainer, ProductContainer, ProductDetails } from "@/styles/pages/product"
 import { CartModal } from "@/components/CartModal"
+import { CartContext } from "@/contexts/CartContext"
 
 interface ProductProps {
   product: {
@@ -18,13 +19,14 @@ interface ProductProps {
     imageUrl: string
     price: string
     description: string
-    defaultPriceId: string
+    priceId: string
   }
 }
 
 export default function Product({ product }: ProductProps) {
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false)
   const { isFallback } = useRouter()
+  const { addNewItemToCart } = useContext(CartContext)
 
   if (isFallback) {
     return <div>loading...</div>
@@ -35,7 +37,7 @@ export default function Product({ product }: ProductProps) {
       setIsCreatingCheckout(true)
 
       const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId
+        priceId: product.priceId
       })
 
       const { checkoutUrl } = response.data
@@ -47,6 +49,11 @@ export default function Product({ product }: ProductProps) {
 
       alert('Falha ao redirecionar ao checkout!')
     }
+  }
+
+  function handleAddNewItemToCart() {
+    const newItem = {...product, quantity: 1}
+    addNewItemToCart(newItem)
   }
 
   return (
@@ -61,17 +68,14 @@ export default function Product({ product }: ProductProps) {
         <ProductDetails>
           <h1>{product.name}</h1>
           <span>{product.price}</span>
-
           <p>{product.description}</p>
-          <Dialog.Root>
-            <Dialog.Trigger asChild >
-              <button disabled={isCreatingCheckout}>
-                Colocar na sacola
-              </button>
-            </Dialog.Trigger>
+          <Dialog.Trigger asChild >
+            <button onClick={handleAddNewItemToCart} disabled={isCreatingCheckout}>
+              Colocar na sacola
+            </button>
+          </Dialog.Trigger>
 
-            <CartModal />
-          </Dialog.Root>
+          <CartModal />
         </ProductDetails>
       </ProductContainer>
     </>
@@ -106,7 +110,7 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
           currency: 'BRL'
         }).format(price.unit_amount! / 100),
         description: product.description,
-        defaultPriceId: price.id
+        priceId: price.id
       }
     },
     revalidate: 60 * 60 * 1

@@ -1,22 +1,20 @@
+import { Header } from '@/components/Header'
 import { CartContextProvider } from '@/contexts/CartContext'
 import { globalStyles } from '@/styles/global'
-import { Container, Header } from '@/styles/pages/app'
+import { Container } from '@/styles/pages/app'
 import type { AppProps } from 'next/app'
-import Image from 'next/image'
-
-import logo from '../assets/logo.png'
+import * as Dialog from '@radix-ui/react-dialog'
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Container>
-      <Header>
-        <Image src={logo} alt="" />
-      </Header>
       <CartContextProvider>
-        <Component {...pageProps} />
+        <Dialog.Root>
+          <Header />        
+          <Component {...pageProps} />
+        </Dialog.Root>
       </CartContextProvider>
     </Container>)
-  
 }
