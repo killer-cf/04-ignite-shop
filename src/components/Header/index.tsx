@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import logo from '../../assets/logo.png'
 import { HeaderContainer } from './styles'
 import * as Dialog from '@radix-ui/react-dialog'
+import { CartModal } from '../CartModal'
 
 export function Header() {
   const { items } = useContext(CartContext)
@@ -19,10 +20,11 @@ export function Header() {
       </Dialog.Trigger>
       
       {items.length > 0 && (
-          <div className="ball">
-            <p>{items.length}</p>
-          </div>
+        <div className="ball">
+          <p>{items.length}</p>
+        </div>
         )}
+      <CartModal />
     </HeaderContainer>
   )
 }
