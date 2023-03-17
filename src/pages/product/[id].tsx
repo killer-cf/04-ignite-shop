@@ -1,4 +1,3 @@
-import axios from "axios"
 import Head from "next/head"
 import Image from "next/image"
 import Stripe from "stripe"
@@ -24,31 +23,11 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false)
   const { isFallback } = useRouter()
   const { addNewItemToCart } = useContext(CartContext)
 
   if (isFallback) {
     return <div>loading...</div>
-  }
-
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckout(true)
-
-      const response = await axios.post('/api/checkout', {
-        priceId: product.priceId
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-
-    } catch (err) {
-      setIsCreatingCheckout(false)
-
-      alert('Falha ao redirecionar ao checkout!')
-    }
   }
 
   function handleAddNewItemToCart() {
@@ -70,7 +49,7 @@ export default function Product({ product }: ProductProps) {
           <span>{product.price}</span>
           <p>{product.description}</p>
           <Dialog.Trigger asChild >
-            <button onClick={handleAddNewItemToCart} disabled={isCreatingCheckout}>
+            <button onClick={handleAddNewItemToCart}>
               Colocar na sacola
             </button>
           </Dialog.Trigger>
