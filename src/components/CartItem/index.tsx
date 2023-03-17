@@ -1,5 +1,6 @@
-import { Item } from "@/contexts/CartContext";
+import { CartContext, Item } from "@/contexts/CartContext";
 import Image from "next/image";
+import { useContext } from "react";
 import { CartItemContainer, ImageContainer, ItemInfo } from "./styles";
 
 interface CartItemProps {
@@ -7,6 +8,12 @@ interface CartItemProps {
 }
 
 export function CartItem({ itemData }: CartItemProps){
+  const { removeItemFromCart } = useContext(CartContext)
+
+  function handleRemoveItemFromCart() {
+    removeItemFromCart(itemData.id)
+  }
+
   return (
     <CartItemContainer>
       <ImageContainer>
@@ -15,7 +22,7 @@ export function CartItem({ itemData }: CartItemProps){
       <ItemInfo>
         <p>{itemData.name}</p>
         <h2>{itemData.price}</h2>
-        <button>Remover</button>
+        <button onClick={handleRemoveItemFromCart}>Remover</button>
       </ItemInfo>
     </CartItemContainer>
   )

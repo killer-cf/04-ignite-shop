@@ -13,6 +13,14 @@ export function CartReducer(state: CartState, action: any) {
       return produce(state,(draft)=> {
         draft.items.push(action.payload.newItem)
       })
+
+    case ActionTypes.REMOVE_ITEM: {
+      const itemToRemove = state.items.findIndex(item=> item.id === action.payload.itemId)
+
+      return produce(state, (draft) => {
+        draft.items.splice(itemToRemove, 1)
+      })
+    }
   
     default:
       return state
