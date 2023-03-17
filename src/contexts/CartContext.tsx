@@ -1,4 +1,4 @@
-import { addNewItemAction, removeItemAction } from "@/reducers/Cart/actions";
+import { addNewItemAction, clearCartAction, removeItemAction } from "@/reducers/Cart/actions";
 import { CartReducer } from "@/reducers/Cart/reducer";
 import { createContext, ReactNode, useReducer } from "react";
 
@@ -15,6 +15,7 @@ interface CartContextProps {
   items: Item[],
   addNewItemToCart: (newItem: Item) => void
   removeItemFromCart: (itemId: string) => void
+  clearCart: () => void
 }
 
 export const CartContext = createContext({} as CartContextProps)
@@ -38,8 +39,19 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     dispatch(removeItemAction(itemId))
   }
 
+  function clearCart() {
+    dispatch(clearCartAction())
+  }
+
   return (
-    <CartContext.Provider value={{ items, addNewItemToCart, removeItemFromCart }}>
+    <CartContext.Provider
+      value={{ 
+        items, 
+        addNewItemToCart, 
+        removeItemFromCart, 
+        clearCart
+        }}
+    >
       {children}
     </CartContext.Provider>
   )

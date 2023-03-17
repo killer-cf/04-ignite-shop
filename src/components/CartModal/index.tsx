@@ -14,7 +14,7 @@ interface LineItemsData {
 
 export function CartModal() {
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false)
-  const { items } = useContext(CartContext)
+  const { items, clearCart } = useContext(CartContext)
 
   const totalValue = items.reduce((total, item) => total += parseInt(item.price.replace(/[^0-9]/g,'')), 0)
   const total = new Intl.NumberFormat('pt-BR', {
@@ -35,6 +35,8 @@ export function CartModal() {
       const response = await axios.post('/api/checkout', { lineItems })
 
       const { checkoutUrl } = response.data
+
+      clearCart()
 
       window.location.href = checkoutUrl
 

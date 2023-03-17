@@ -21,6 +21,12 @@ export function CartReducer(state: CartState, action: any) {
         draft.items.splice(itemToRemove, 1)
       })
     }
+
+    case ActionTypes.CLEAR_CART: {
+      return produce(state, (draft) => {
+        draft.items = []
+      })
+    }
   
     default:
       return state
